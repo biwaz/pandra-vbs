@@ -1,0 +1,20 @@
+<job id="urlencode">
+<comment>urlencode verification program</comment>
+<script language="VBScript">
+option explicit
+
+if wscript.arguments.count < 1 then wscript.quit(0)
+
+dim objFileSys
+set objFileSys = createobject("Scripting.FileSystemObject")
+with objFileSys.opentextfile("urlencode.vbs", 1) : execute .readall : end with
+
+dim objUrlEncode
+set objUrlEncode = new urlencode
+wscript.echo objUrlEncode.fromstring(wscript.arguments(0))
+
+dim objUTF8
+set objUTF8 = createobject("System.Text.UTF8Encoding")
+wscript.echo objUrlEncode.frombytes(objUTF8.GetBytes_4(wscript.arguments(0)))
+</script>
+</job>
