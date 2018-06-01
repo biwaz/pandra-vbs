@@ -1,0 +1,85 @@
+<job id="cipher">
+<comment>cipher function example</comment>
+<script language="VBScript">
+option explicit
+
+if wscript.arguments.count < 1 then wscript.quit(0)
+
+if strcomp(wscript.arguments(0), "-gen", 1) <> 0 and strcomp(wscript.arguments(0), "-key", 1) <> 0 then
+	if wscript.arguments.count < 2 then wscript.quit(0)
+end if
+
+dim objUTF8, objDOM, objBinHex, objBinBase64
+
+set objUTF8 = createobject("System.Text.UTF8Encoding")
+' utf8->text objUTF8.GetString(bytes)
+' text->utf8 objUTF8.GetBytes_4(strtext)
+
+set objDOM = createobject("MSXML2.DOMDocument")
+
+set objBinHex = objDOM.createelement("binhex")
+objBinHex.dataType = "bin.hex"
+' bin->hex objBinHex.nodetypedvalue = bytes : objBinHex.text
+' hex->bin objBinHex.text = strtext : objBinHex.nodetypedvalue
+
+set objBinBase64 = objDOM.createelement("base64")
+objBinBase64.dataType = "bin.base64"
+' bin->base64 objBinBase64.nodetypedvalue = bytes : objBinBase64.text
+' base64->bin objBinBase64.text = strtext : objBinBase64.nodetypedvalue
+
+dim objMD5, objSHA1, objRIPEMD160, objSHA256, objSHA384, objSHA512, objaes
+set objMD5 = createobject("System.Security.Cryptography.MD5CryptoServiceProvider")
+set objSHA1 = createobject("System.Security.Cryptography.SHA1CryptoServiceProvider")
+set objRIPEMD160 = createobject("System.Security.Cryptography.RIPEMD160Managed")
+set objSHA256 = createobject("System.Security.Cryptography.SHA256Managed")
+set objSHA384 = createobject("System.Security.Cryptography.SHA384Managed")
+set objSHA512 = createobject("System.Security.Cryptography.SHA512Managed")
+set objaes = createobject("System.Security.Cryptography.RijndaelManaged")
+
+objBinBase64.text = "wH99g69Wtm+jCFuEtDKVwkhhUHd0prJOut5JXUwS2TI="
+objAes.Key = objBinBase64.nodetypedvalue
+
+objBinHex.text = "af19b4f98811a0367a9e2619273e3ec0"
+objAes.IV = objBinHex.nodeTypedValue
+
+dim obj
+set obj = nothing
+
+if strcomp(wscript.arguments(0), "-enc", 1) = 0 then
+	dim s
+	s = objUTF8.GetBytes_4(wscript.arguments(1))
+	objBinBase64.nodetypedvalue = objAes.CreateEncryptor().TransformFinalBlock((s),0,lenb(s))
+	wscript.echo objBinBase64.text
+elseif strcomp(wscript.arguments(0), "-dec", 1) = 0 then
+	objBinBase64.text = wscript.arguments(1)
+	wscript.echo objUTF8.GetString(objAes.CreateDecryptor().TransformFinalBlock((objBinBase64.nodetypedvalue),0,lenb(objBinBase64.nodetypedvalue)))
+elseif strcomp(wscript.arguments(0), "-gen", 1) = 0 then
+	objAes.GenerateKey()
+	objAes.GenerateIV()
+elseif strcomp(wscript.arguments(0), "-md5", 1) = 0 then
+	set obj = objMD5
+elseif strcomp(wscript.arguments(0), "-sha1", 1) = 0 then
+	set obj = objSHA1
+elseif strcomp(wscript.arguments(0), "-RIPEMD160", 1) = 0 then
+	set obj = objRIPEMD160
+elseif strcomp(wscript.arguments(0), "-sha256", 1) = 0 then
+	set obj = objSHA256
+elseif strcomp(wscript.arguments(0), "-sha384", 1) = 0 then
+	set obj = objSHA384
+elseif strcomp(wscript.arguments(0), "-sha512", 1) = 0 then
+	set obj = objSHA512
+end if
+
+if obj is nothing then
+	if strcomp(wscript.arguments(0), "-gen", 1) = 0 or strcomp(wscript.arguments(0), "-key", 1) = 0 then
+		objBinBase64.nodetypedvalue = objAes.Key
+		wscript.echo "Key." & objBinBase64.text
+		objBinHex.nodeTypedValue = objAes.IV
+		wscript.echo "IV." & objBinHex.text
+	end if
+else
+	objBinHex.nodetypedvalue = obj.ComputeHash_2(objUTF8.GetBytes_4(wscript.arguments(1)))
+	wscript.echo objBinHex.text
+end if
+</script>
+</job>

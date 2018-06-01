@@ -1,0 +1,23 @@
+<job id="fromjs">
+<comment>borrow some functions from jscript</comment>
+<script language="JScript">
+	function jsonParse(str) { return eval('(' + str + ')'); }
+
+	function sortStrAsc(vbAry)  { return vbAry.toArray().sort() ; }
+	function sortStrDesc(vbAry) { return vbAry.toArray().sort().reverse() ; }
+	function sortNumAsc(vbAry)  { return vbAry.toArray().sort(numAsc) ; }
+	function sortNumDesc(vbAry) { return vbAry.toArray().sort(numAsc).reverse() ; }
+	function numAsc(a, b)       { return (a - b) ; }
+</script>
+<script language="VBScript">
+
+dim objData, s
+set objData = jsonParse("{name:'data'}")
+wscript.echo objData.name
+
+wscript.echo
+for each s in split(sortStrAsc(array("xyz", "abc", "012")), ",")
+	wscript.echo s
+next
+</script>
+</job>
