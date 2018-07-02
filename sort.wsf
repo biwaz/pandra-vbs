@@ -1,0 +1,19 @@
+<job id="sort">
+<comment>sort program</comment>
+<script language="VBScript">
+option explicit
+
+dim objArray, i
+set objArray = createobject("System.Collections.ArrayList")
+for i = 1 to wscript.arguments.count
+	objArray.add wscript.arguments(i - 1)
+	wscript.echo wscript.arguments(i - 1)
+next
+wscript.echo "==="
+objArray.sort
+dim item
+for each item in objArray
+	wscript.echo item
+next
+</script>
+</job>

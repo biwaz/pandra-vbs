@@ -1,0 +1,12 @@
+<job id="json">
+<comment>json parser from jscript</comment>
+<script language="JScript">
+	function jsonParse(str) { return eval('(' + str + ')'); }
+</script>
+<script language="VBScript">
+
+dim objData
+set objData = jsonParse("{name:'data'}")
+wscript.echo objData.name
+</script>
+</job>
